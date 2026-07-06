@@ -3,26 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Function Supply Co. | Coming Soon</title>
+    <title>Function Supply Co. | Custom Event Gear</title>
     
-    <!-- Fonts: Inter for headings, Space Mono for technical data -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS for rapid styling -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Three.js for 3D interaction -->
+    <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #0f172a; /* Tailwind slate-900 */
+            /* Beach sunset gradient */
+            background: linear-gradient(135deg, #ff7e5f, #feb47b, #86a8e7, #91eae4);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             color: #ffffff;
             font-family: 'Inter', sans-serif;
+        }
+
+        h1, h2, h3, .display-font {
+            font-family: 'Bebas Neue', sans-serif;
         }
 
         #canvas-container {
@@ -40,89 +47,130 @@
             z-index: 10;
         }
 
+        /* Gritty glassmorphism - adjusted for lighter background */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
         }
 
-        .glow-button {
-            transition: all 0.3s ease;
+        /* Neon pulsing button - Sunset Orange/Pink */
+        .neon-button {
+            position: relative;
+            background: linear-gradient(90deg, #ff512f, #dd2476, #ff512f);
             background-size: 200% auto;
-        }
-
-        .glow-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px -10px rgba(236, 72, 153, 0.8);
-            background-position: right center;
+            transition: 0.3s;
+            animation: gradientShift 3s linear infinite;
         }
         
-        .text-gradient {
-            background: linear-gradient(to right, #38bdf8, #ec4899, #fbbf24);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .neon-button::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(90deg, #ff512f, #dd2476, #ff512f);
+            background-size: 200% auto;
+            z-index: -1;
+            filter: blur(15px);
+            opacity: 0.7;
+            animation: gradientShift 3s linear infinite;
+        }
+
+        .neon-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .text-neon {
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.4);
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .strobe-text {
+            animation: strobe 2s infinite alternate;
+        }
+
+        @keyframes strobe {
+            0%, 100% { opacity: 1; text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.4); }
+            50% { opacity: 0.8; text-shadow: 0 0 5px rgba(0, 255, 255, 0.4), 0 0 10px rgba(0, 255, 255, 0.2); }
         }
     </style>
 </head>
-<body class="antialiased selection:bg-pink-500 selection:text-white">
+<body class="antialiased selection:bg-teal-400 selection:text-white">
 
-    <!-- 3D Canvas Background -->
+    <!-- 3D Background Canvas -->
     <div id="canvas-container"></div>
 
-    <!-- Main Content -->
-    <main id="content-overlay" class="min-h-screen flex flex-col justify-between p-6 md:p-12 pointer-events-none">
+    <!-- UI Overlay -->
+    <main id="content-overlay" class="min-h-screen flex flex-col justify-between p-6 md:p-12">
         
-        <!-- Header -->
-        <header class="flex justify-between items-center w-full">
-            <div class="font-black text-xl tracking-tighter">
+        <!-- Top Nav (Logo) -->
+        <header class="flex justify-between items-center w-full max-w-7xl mx-auto pointer-events-auto">
+            <div class="text-3xl display-font tracking-widest text-white drop-shadow-md border-b-2 border-teal-300 pb-1">
                 FSC.
             </div>
-            <div class="text-xs md:text-sm text-gray-300 font-bold bg-white/10 px-4 py-1.5 rounded-full backdrop-blur-md border border-white/10 shadow-xl">
-                📍 Chicago, IL
+            <div class="hidden md:flex space-x-4">
+                <span class="text-sm font-bold tracking-widest uppercase text-white bg-black/20 px-3 py-1 rounded-full backdrop-blur-sm">Chicago, IL</span>
             </div>
         </header>
 
         <!-- Center Content -->
-        <div class="flex flex-col items-center text-center max-w-4xl mx-auto pointer-events-auto w-full">
+        <div class="flex flex-col items-center text-center max-w-5xl mx-auto pointer-events-auto w-full">
             
-            <div class="inline-flex items-center space-x-2 glass-panel rounded-full px-5 py-2 mb-8 shadow-2xl border border-pink-500/30">
-                <span class="text-xl">🔥</span>
-                <span class="text-xs md:text-sm font-bold tracking-widest text-gray-200 uppercase">Dropping Fall</span>
+            <div class="inline-flex items-center space-x-2 glass-panel rounded-md px-6 py-2 mb-6 border-l-4 border-teal-300">
+                <span class="text-xl">🌴</span>
+                <span class="text-sm md:text-base font-bold tracking-widest text-white uppercase shadow-black drop-shadow-md">Formals • Dages • Mixers</span>
             </div>
 
-            <h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-none">
-                Custom Gear For <br/> 
-                <span class="text-gradient">Greek Life & Events.</span>
+            <h1 class="text-6xl md:text-8xl lg:text-[10rem] leading-none mb-4 display-font text-transparent bg-clip-text bg-gradient-to-br from-white via-orange-100 to-teal-200 drop-shadow-2xl uppercase">
+                Upgrade The <br/> <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-blue-400 to-teal-300 text-neon strobe-text">Function.</span>
             </h1>
             
-            <p class="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
-            Custom tokens, multi-color bottle openers, and rush merch. 3D printed fast in Chicago. Zero manual painting. Zero setup fees.
-        </p>
+            <p class="text-gray-900 drop-shadow-md text-lg md:text-2xl max-w-3xl mx-auto mb-8 font-bold leading-relaxed">
+                Premium custom event gear. Zero setup fees. Delivered in Chicago.
+            </p>
 
-        <a href="mailto:jacob@functionsupplyco.com" class="glow-button pointer-events-auto inline-flex items-center justify-center px-10 py-5 text-sm md:text-base font-black text-white bg-gradient-to-r from-sky-400 via-pink-500 to-amber-400 rounded-full uppercase tracking-widest transition-all shadow-xl">
-            Pre-Book Your Order
-        </a>
-    </div>
-
-    <!-- Footer -->
-    <footer class="w-full flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 font-bold tracking-widest uppercase">
-        <div class="glass-panel px-5 py-2 rounded-full mb-4 md:mb-0 border border-white/5">
-            High-Speed Multi-Color Printing
+            <a href="mailto:jacob@functionsupplyco.com?subject=Order Inquiry" class="neon-button text-white display-font text-2xl md:text-3xl px-12 py-4 rounded-md tracking-wider uppercase inline-block">
+                Pre-Book Your Order
+            </a>
+            
+            <p class="mt-4 text-sm text-gray-800 font-semibold uppercase tracking-widest drop-shadow-sm">
+                Limited production slots available
+            </p>
         </div>
-        <div>
-            &copy; <span id="year"></span> Function Supply Co.
-        </div>
-    </footer>
-</main>
 
-<script>
+        <!-- Footer -->
+        <footer class="flex justify-between items-end w-full max-w-7xl mx-auto pointer-events-auto text-xs text-white/80 font-bold uppercase tracking-widest">
+            <div>
+                © <span id="year"></span> Function Supply Co.<br>
+                Engineered for the party.
+            </div>
+            <div class="text-right">
+                Direct:<br>
+                <a href="mailto:jacob@functionsupplyco.com" class="hover:text-teal-300 transition-colors">jacob@functionsupplyco.com</a>
+            </div>
+        </footer>
+    </main>
+
+    <script>
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // --- Three.js Setup ---
-        let scene, camera, renderer, objects = [];
+        // --- Three.js Setup: Sunset Beach Waves ---
+        let scene, camera, renderer;
+        let plane;
         let mouseX = 0;
         let mouseY = 0;
+        let count = 0;
         const windowHalfX = window.innerWidth / 2;
         const windowHalfY = window.innerHeight / 2;
 
@@ -131,77 +179,46 @@
 
             scene = new THREE.Scene();
 
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 150;
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
+            camera.position.y = 150;
+            camera.position.z = 300;
 
-            // Lighting to make the "plastic" material pop
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            // Lighting (Sunset vibe)
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
             scene.add(ambientLight);
 
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            dirLight.position.set(50, 100, 50);
+            const dirLight = new THREE.DirectionalLight(0xffaa55, 1.5);
+            dirLight.position.set(0, 200, -200);
             scene.add(dirLight);
 
-            const backLight = new THREE.DirectionalLight(0xec4899, 0.6); // Pink rim light
-            backLight.position.set(-50, -100, -50);
-            scene.add(backLight);
+            // The Setting Sun
+            const sunGeometry = new THREE.SphereGeometry(120, 32, 32);
+            const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xff5500 });
+            const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+            sun.position.set(0, 80, -600);
+            scene.add(sun);
 
-            // Material settings (mimicking glossy Bambu filament)
-            const plasticMaterialParams = {
-                roughness: 0.15,
-                metalness: 0.1,
-                clearcoat: 1.0,
-                clearcoatRoughness: 0.1
-            };
+            // The Digital Ocean Waves
+            const geometry = new THREE.PlaneGeometry(2000, 1000, 60, 30);
+            // Rotate plane to lay flat on the ground (XZ plane)
+            geometry.rotateX(-Math.PI / 2);
 
-            // Geometries representing our products
-            const geometries = [
-                new THREE.CylinderGeometry(12, 12, 2.5, 32), // Tokens/Coins
-                new THREE.TorusGeometry(10, 3.5, 16, 100),   // Bottle Opener Rings
-                new THREE.IcosahedronGeometry(12)            // Modern Geometric accents
-            ];
+            const material = new THREE.MeshPhongMaterial({
+                color: 0x00ffff,
+                emissive: 0x0044aa,
+                shininess: 80,
+                transparent: true,
+                opacity: 0.6,
+                wireframe: true // Digital engineer vibe
+            });
 
-            // Tailwind brand colors: Sky Blue, Hot Pink, Amber Yellow
-            const colors = [0x38bdf8, 0xec4899, 0xfbbf24]; 
-
-            // Create floating objects
-            for (let i = 0; i < 25; i++) {
-                const geo = geometries[Math.floor(Math.random() * geometries.length)];
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                
-                const material = new THREE.MeshPhysicalMaterial({
-                    color: color,
-                    ...plasticMaterialParams
-                });
-
-                const mesh = new THREE.Mesh(geo, material);
-                
-                // Random positioning across the screen
-                mesh.position.x = (Math.random() - 0.5) * 350;
-                mesh.position.y = (Math.random() - 0.5) * 350;
-                mesh.position.z = (Math.random() - 0.5) * 200 - 50;
-
-                // Random initial rotation
-                mesh.rotation.x = Math.random() * Math.PI;
-                mesh.rotation.y = Math.random() * Math.PI;
-
-                // Storing randomized speed data for the animation loop
-                mesh.userData = {
-                    rotSpeedX: (Math.random() - 0.5) * 0.02,
-                    rotSpeedY: (Math.random() - 0.5) * 0.02,
-                    floatSpeed: (Math.random() * 0.05) + 0.02,
-                    startY: mesh.position.y,
-                    floatOffset: Math.random() * Math.PI * 2
-                };
-
-                objects.push(mesh);
-                scene.add(mesh);
-            }
+            plane = new THREE.Mesh(geometry, material);
+            plane.position.y = -50;
+            scene.add(plane);
 
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setClearColor(0x000000, 0); // Keep background transparent so CSS shows
             container.appendChild(renderer.domElement);
 
             document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -218,14 +235,14 @@
         }
 
         function onDocumentMouseMove(event) {
-            mouseX = (event.clientX - windowHalfX) * 0.05;
-            mouseY = (event.clientY - windowHalfY) * 0.05;
+            mouseX = (event.clientX - windowHalfX) * 0.1;
+            mouseY = (event.clientY - windowHalfY) * 0.1;
         }
         
         function onDocumentTouchMove(event) {
             if (event.touches.length == 1) {
-                mouseX = (event.touches[0].pageX - windowHalfX) * 0.05;
-                mouseY = (event.touches[0].pageY - windowHalfY) * 0.05;
+                mouseX = (event.touches[0].pageX - windowHalfX) * 0.1;
+                mouseY = (event.touches[0].pageY - windowHalfY) * 0.1;
             }
         }
 
@@ -235,21 +252,24 @@
         }
 
         function render() {
-            const time = Date.now() * 0.001;
-
-            // Parallax camera effect based on mouse movement
             camera.position.x += (mouseX - camera.position.x) * 0.05;
-            camera.position.y += (-mouseY - camera.position.y) * 0.05;
+            camera.position.y += (-mouseY - camera.position.y + 150) * 0.05; // Keep camera above water
             camera.lookAt(scene.position);
 
-            // Animate floating objects
-            objects.forEach((obj) => {
-                obj.rotation.x += obj.userData.rotSpeedX;
-                obj.rotation.y += obj.userData.rotSpeedY;
-                
-                // Gentle floating bobbing effect
-                obj.position.y = obj.userData.startY + Math.sin(time * 2 + obj.userData.floatOffset) * 15;
-            });
+            // Animate waves
+            const positions = plane.geometry.attributes.position.array;
+            let i = 0;
+            for (let ix = 0; ix <= 60; ix++) {
+                for (let iy = 0; iy <= 30; iy++) {
+                    // Because we rotated the plane by -PI/2, the Y axis is the vertical axis.
+                    // The array is structured as [x1, y1, z1, x2, y2, z2, ...]
+                    // Therefore, modifying positions[i + 1] modifies the height (Y).
+                    positions[i + 1] = (Math.sin((ix + count) * 0.3) * 20) + (Math.cos((iy + count) * 0.3) * 20);
+                    i += 3;
+                }
+            }
+            plane.geometry.attributes.position.needsUpdate = true;
+            count += 0.05;
 
             renderer.render(scene, camera);
         }
